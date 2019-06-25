@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  urlapp:
+    build:
+      context: .
+    image: 3.6-apline
+    environment:
+      - FLASK_ENV=development
+    networks:
+      - url_net
+    volumes: 
+      - ./data/:/url_status_project
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
+    image: nginx
+    ports:
+      - 80:80
+    networks:
+      - url_net
+    volumes:
+      - ./nginx/data:/etc/nginx/conf.d
+
+networks:
+  url_net:
+
+
