@@ -1,0 +1,52 @@
+---
+
+- name: Ensure Old version of Docker is not installed
+  package:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - docker
+    - docker-engine
+    - docker.io
+
+- name: Installing Dependencies
+  package:
+    name:
+      - "{{ item }}"
+    state: present
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+
+- name: Adding Docker key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+    state: present
+  register: add_repository_key
+  ignore_errors: true
+
+- name: Installing CURL if adding docker key using apt_key fails
+  package:
+    name:
+      - curl
+    state: present
+  when: add_repository_key is failed
+
+- name: Adding Docker key using CURL if adding docker key using apt_key fails
+  shell: |
+    curl -sSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  args:
+    warn: false
+  when: add_repository_key is failed
+
+- name: Adding Docker apt repository
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} stable"
+    state: present
+    update_cache: true
+
+- name: Installing Docker-ce
+  package:
+    name: docker-ce
+    state: present

@@ -1,0 +1,46 @@
+---
+- hosts: all
+  become: yes
+  become_method: sudo
+  tasks:
+    - include_tasks: install-docker.yml
+    - name: Install pip
+      apt: 
+        name: python-pip 
+        state: present
+        update_cache: yes
+    - name: Install docker-py
+      pip: 
+        name: docker-py
+    - name: Copy app files from host to remote
+      copy:
+        src: ./app/
+        dest: /home/vagrant/
+    - name: Copy nginx files 
+      copy:
+        src: ./nginx/
+        dest: /home/vagrant/
+    - name: Create url_net network
+      docker_network:
+        name: url_net
+        state: present
+    - name: Create urlapp container service
+      docker_container:
+        name: urlapp
+        image: sayaliupasani/urlapp:1.0
+        env:
+          FLASK_ENV=development
+        networks:
+          - name: url_net
+        volumes:
+          - ./:/url_status_project:ro
+    - name: Create nginx container
+      docker_container:
+        name: nginx
+        image: sayaliupasani/nginx_proxy:1.0
+        ports: 
+          - "80:80"
+        networks:
+          - name: url_net
+        volumes:
+          - ./nginx/data:/etc/nginx/conf.d
