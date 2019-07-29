@@ -1,3 +1,4 @@
+# Application file
 from flask import Flask, request, render_template
 import requests
 from requests.exceptions import ConnectionError, MissingSchema

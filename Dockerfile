@@ -12,8 +12,10 @@ RUN mkdir url_status_project && cd url_status_project
 
 WORKDIR /url_status_project
 
-COPY ./requirements.txt /url_status_project/tmp/
+COPY app .
 
-RUN pip3 install -r ./tmp/requirements.txt
+RUN pip3 install -r /url_status_project/requirements.txt
 
 EXPOSE 5000
+
+CMD ["python", "status_app.py"]

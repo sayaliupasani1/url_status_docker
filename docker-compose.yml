@@ -4,19 +4,19 @@ services:
   urlapp:
     build:
       context: .
-    image: 3.6-apline
+    image: sayaliupasani/urlapp:1.0
     environment:
       - FLASK_ENV=development
     networks:
       - url_net
     volumes: 
-      - ./data/:/url_status_project
+      - ./app/:/url_status_project
 
   nginx:
     build:
       context: .
       dockerfile: ./nginx/Dockerfile
-    image: nginx
+    image: sayaliupasani/nginx_proxy:1.0
     ports:
       - 80:80
     networks:
