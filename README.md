@@ -77,8 +77,26 @@ To access the application from your host machine, you can access it over localho
 
 ![](images/webpage.png)
 
+4) Using Terraform
+
+To run this application using Terraform, use the main.tf under terraform directory. The main.tf will pull the images from docker hub and run the containers.
+
+The application will be available on localhost:8085 due to configured port mappings in main.tf file.
+
+Once you have the main.tf file, execute below commands:
+
+- Initiate terraform: `terraform init`
+
+- Validate the file: `terraform validate`
+
+- You can create terraform plan or skip to next step: `terraform plan -out=tfplan`
+
+- Apply terraform: `terraform apply` or `terraform apply tfplan`
+
+You can verify that the two containers are running as `docker ps`
+
+
 ### Further plans
 
 1) Currently the nginx is not load-balancing traffic to multiple app containers since the accessed URLs are not stored in database.
 I plan to implement redis database that can be used to store the accessed URLs and relevant status codes from both the containers.
-2) I plan to codify this app with Terraform using docker provider (I might create a separate repo for that).
