@@ -18,7 +18,7 @@ resource "docker_container" "urlapp" {
 	hostname = "urlapp"
 	volumes {
 
-	  host_path = "/Users/sayaliupasani/devel/url_status_docker/app/"
+	  host_path = "${path.cwd}/../app/"
 	  container_path ="/url_status_project"
 	 }
 
@@ -37,7 +37,7 @@ resource "docker_container" "nginx" {
 	}
 	volumes {
 
-	  host_path = "/Users/sayaliupasani/devel/url_status_docker/nginx/data/"
+	  host_path = "${path.cwd}/../nginx/data/"
 	  container_path = "/etc/nginx/conf.d"
 	}
 
