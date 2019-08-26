@@ -9,7 +9,7 @@ app = Flask(__name__)
 url_dict = {}
 
 
-r = redis.Redis(host='localhost',port=6379,password=None, charset='utf-8', decode_responses=True)
+r = redis.Redis(host='url_status_docker_redis_1',port=6379,password=None, charset='utf-8', decode_responses=True)
 print(r.keys())
 
 def requesturl(processed_url):

@@ -5,24 +5,38 @@ services:
     build:
       context: .
     image: sayaliupasani/urlapp:1.0
+    depends_on:
+      - redis
     environment:
       - FLASK_ENV=development
     networks:
       - url_net
     volumes: 
       - ./app/:/url_status_project
+    restart: always
 
   nginx:
     build:
       context: .
       dockerfile: ./nginx/Dockerfile
     image: sayaliupasani/nginx_proxy:1.0
+    depends_on:
+      - urlapp
     ports:
       - 80:80
     networks:
       - url_net
     volumes:
       - ./nginx/data:/etc/nginx/conf.d
+
+  redis:
+    image: bitnami/redis:latest
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - 6379:6379
+    networks:
+      - url_net
 
 networks:
   url_net:
