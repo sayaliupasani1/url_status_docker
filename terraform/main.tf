@@ -5,7 +5,7 @@ resource "docker_network" "urlnet" {
 }
 
 resource "docker_image" "urlapp" {
-	name = "sayaliupasani/urlapp:1.0"
+	name = "sayaliupasani/urlapp:2.0"
 }
 
 resource "docker_image" "nginx_proxy" {
@@ -25,6 +25,8 @@ resource "docker_container" "urlapp" {
 	networks_advanced {
 	  name = "urlnet"
 	}
+
+	depends_on = [docker_container.redis]
 }
 
 resource "docker_container" "nginx" {
@@ -33,7 +35,7 @@ resource "docker_container" "nginx" {
 	hostname = "nginx_server"
 	ports {
 	  internal = "80"
-	  external = "8085"
+	  external = "80"
 	}
 	volumes {
 
@@ -44,4 +46,22 @@ resource "docker_container" "nginx" {
 	networks_advanced {
 	  name = "urlnet"
 	}
+
+	depends_on = [docker_container.urlapp]
+}
+
+resource "docker_container" "redis" {
+	name = "url_status_docker_redis_1"
+	image = "bitnami/redis:latest"
+	hostname = "redis"
+	env = ["ALLOW_EMPTY_PASSWORD=yes"]
+	ports {
+	  internal = "6379"
+	  external = "6379"
+	}
+
+	networks_advanced {
+	  name = "urlnet"
+	}
+
 }
